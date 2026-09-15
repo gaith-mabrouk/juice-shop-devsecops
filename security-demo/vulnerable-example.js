@@ -1,5 +1,5 @@
 function evaluateExpression(userInput) {
-  return eval(userInput)
+  return userInput
 }
 
 module.exports = { evaluateExpression }
