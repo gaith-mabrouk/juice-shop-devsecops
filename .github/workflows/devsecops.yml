@@ -66,10 +66,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           fetch-depth: 0
-          
+
       - name: Install Gitleaks
         run: |
           GITLEAKS_VERSION="8.30.1"
