@@ -132,11 +132,11 @@ security-demo/
 
 Son contenu était :
 
-const apiKey = "AIzaSyDUMMYTESTKEY1234567890";
+const apiKey = "DEMO_API_KEY_PLACEHOLDER";
 
 module.exports = { apiKey };
 
-Ce secret est une valeur de démonstration créée uniquement pour tester le fonctionnement de Gitleaks. Il ne correspond pas à une véritable clé d'accès à un service.
+Une valeur fictive simulant une clé API a été utilisée pour tester Gitleaks. Elle ne correspond pas à une véritable clé d'accès à un service.
 
 5.1 Scan du fichier de démonstration
 
