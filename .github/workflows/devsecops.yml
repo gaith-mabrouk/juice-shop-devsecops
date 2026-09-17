@@ -60,3 +60,35 @@ jobs:
             --config=auto \
             --baseline-commit "${{ steps.baseline.outputs.commit }}" \
             --error
+  gitleaks:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          
+      - name: Install Gitleaks
+        run: |
+          GITLEAKS_VERSION="8.30.1"
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            | tar -xz -C "$RUNNER_TEMP"
+          sudo mv "$RUNNER_TEMP/gitleaks" /usr/local/bin/gitleaks
+          gitleaks version     
+
+      - name: Run Gitleaks differential scan
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASELINE_COMMIT="${{ github.event.pull_request.base.sha }}"
+          else
+            BASELINE_COMMIT="${{ github.event.before }}"
+          fi
+
+          echo "Baseline commit: $BASELINE_COMMIT"
+
+          gitleaks git \
+            --log-opts="${BASELINE_COMMIT}..${{ github.sha }}" \
+            --redact          
