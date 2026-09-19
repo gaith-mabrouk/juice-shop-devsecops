@@ -92,3 +92,30 @@ jobs:
           gitleaks git \
             --log-opts="${BASELINE_COMMIT}..${{ github.sha }}" \
             --redact          
+  sca:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run npm audit
+        run: |
+          npm audit --json > npm-audit-current.json
+        continue-on-error: true
+
+      - name: Run SCA security gate
+        shell: pwsh
+        run: |
+          ./scripts/compare-npm-audit.ps1 `
+            -BaselineFile "./npm-audit-baseline.json" `
+            -CurrentFile "./npm-audit-current.json"           
