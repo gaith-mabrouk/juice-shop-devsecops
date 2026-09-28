@@ -23,6 +23,22 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: Build Docker image
+        run: |
+          docker build -t juice-shop-devsecops:${{ github.sha }} .  
+
+      - name: Docker Scout vulnerability scan
+        uses: docker/scout-action@v1
+        with:
+          command: cves
+          image: juice-shop-devsecops:${{ github.sha }}
+          dockerhub-user: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKERHUB_TOKEN }}
+          write-comment: false
+          only-severities: critical,high
+          only-fixed: true
+          summary: true 
+
   semgrep:
     runs-on: ubuntu-latest
     needs: build
@@ -118,4 +134,4 @@ jobs:
         run: |
           ./scripts/compare-npm-audit.ps1 `
             -BaselineFile "./npm-audit-baseline.json" `
-            -CurrentFile "./npm-audit-current.json"           
+            -CurrentFile "./npm-audit-current.json"
