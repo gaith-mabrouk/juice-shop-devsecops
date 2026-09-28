@@ -27,6 +27,22 @@ jobs:
         run: |
           docker build -t juice-shop-devsecops:${{ github.sha }} .  
 
+      - name: Verify Docker Hub credentials
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          if [ -n "$DOCKERHUB_USERNAME" ]; then
+            echo "DOCKERHUB_USERNAME is set"
+          else
+            echo "DOCKERHUB_USERNAME is NOT set"
+          fi
+
+          if [ -n "$DOCKERHUB_TOKEN" ]; then
+            echo "DOCKERHUB_TOKEN is set"
+          else
+            echo "DOCKERHUB_TOKEN is NOT set"
+          fi    
       - name: Login to Docker Hub
         uses: docker/login-action@v4
         with:
